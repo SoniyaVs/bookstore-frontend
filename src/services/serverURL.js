@@ -1,2 +1,2 @@
-const serverURL="http://localhost:3000"
+const serverURL="https://bookstore-server-ku8g.onrender.com"
 export default serverURL
