@@ -1,10 +1,20 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { routeGuardContext } from '../contextApi/GuardContext'
 
 
 function Pnf() {
+  const { role, authorised } = useContext(routeGuardContext)
+  const navigate = useNavigate()
+  const backHome = () => {
+    if (authorised) {
+      role == 'User' ? navigate('/') : navigate('/admin/home')
+    } else {
+      navigate('/')
+    }
+  }
   return (
-     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-2 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-2 py-8">
       {/* Illustration / Image */}
       <div className="w-full max-w-md mb-2">
         <img
@@ -25,12 +35,7 @@ function Pnf() {
       </p>
 
       {/* Back home button */}
-      <Link
-        to="/"
-        className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-md transition"
-      >
-        BACK HOME
-      </Link>
+      <button onClick={backHome} className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-md transition"> BACK HOME</button>
     </div>
   )
 }

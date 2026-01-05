@@ -1,13 +1,16 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { routeGuardContext } from '../../contextApi/GuardContext'
 
 function AdminHeader() {
-  const navigate=useNavigate()
+  const { role, setAuthorised } = useContext(routeGuardContext)
+  const navigate = useNavigate()
 
-  const logout=()=>{
+  const logout = () => {
     sessionStorage.clear()
+    setAuthorised(false)
     navigate("/login")
-    
+
   }
 
   return (

@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import { googleLoginAPI, loginAPI, registerAPI } from '../services/allAPI';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { routeGuardContext } from '../contextApi/GuardContext';
 
 function Auth({ insideRegister }) {
   const [viewPassword, setViewPassword] = useState(false)
@@ -12,6 +13,7 @@ function Auth({ insideRegister }) {
   const [userDetails, setUserDetails] = useState({
     username: '', email: '', password: ''
   })
+  const { role, setAuthorised } = useContext(routeGuardContext)
   console.log(userDetails);
 
   const handleRegister = async (e) => {
@@ -57,6 +59,7 @@ function Auth({ insideRegister }) {
           toast.success("Login Successfull...!!!")
           sessionStorage.setItem("token", result.data.token)
           sessionStorage.setItem("user", JSON.stringify(result.data.user))
+          setAuthorised(true)
           setTimeout(() => {
             if (result.data.user.role == "admin") {
               navigate('/admin/home')
@@ -85,11 +88,12 @@ function Auth({ insideRegister }) {
     console.log(credentialResponse);
     const decode = jwtDecode(credentialResponse.credential)
     console.log(decode);
-    const result = await googleLoginAPI({ username:decode.name,email:decode.email,password:'googlePassword', pictures:decode.picture })
+    const result = await googleLoginAPI({ username: decode.name, email: decode.email, password: 'googlePassword', pictures: decode.picture })
     if (result.status == 200) {
       toast.success("Login Successfull...!!!")
       sessionStorage.setItem("token", result.data.token)
       sessionStorage.setItem("user", JSON.stringify(result.data.user))
+      setAuthorised(true)
       setTimeout(() => {
         if (result.data.user.role == "admin") {
           navigate('/admin/home')
